@@ -1,0 +1,2 @@
+-r ../../01_laptop_microphone/requirements.txt
+websockets

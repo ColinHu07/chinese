@@ -1,1 +1,8 @@
-# Dependencies will be added with the Stage 1 implementation.
+openai-whisper
+torch
+numpy
+sounddevice
+scipy
+rich
+rapidfuzz
+pytest
