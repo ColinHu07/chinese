@@ -1,6 +1,6 @@
 openai-whisper
 torch
-numpy
+numpy<2
 sounddevice
 scipy
 rich
