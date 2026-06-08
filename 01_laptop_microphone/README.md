@@ -37,3 +37,38 @@ python scripts/live_laptop_mic.py --model base --device-index 2 --chunk-seconds 
 ```
 
 Logs are written to `logs/session_YYYYMMDD_HHMMSS.jsonl`.
+
+## Optional Baidu Chinese -> English Mode
+
+The default mode asks Whisper to translate Chinese audio directly into English. To compare that with Baidu, use Baidu mode:
+
+```text
+Chinese audio -> Whisper Chinese transcript -> Baidu Chinese-to-English text translation
+```
+
+Set credentials first:
+
+```bash
+export BAIDU_TRANSLATE_APP_ID="your_app_id"
+export BAIDU_TRANSLATE_SECRET_KEY="your_secret_key"
+```
+
+Then run:
+
+```bash
+python scripts/live_laptop_mic.py \
+  --mode baidu \
+  --model base \
+  --device-index auto \
+  --chunk-seconds 3 \
+  --overlap-seconds 0.5 \
+  --show-source
+```
+
+For a file:
+
+```bash
+python scripts/translate_file.py --file samples/mandarin_test.wav --mode baidu --show-source
+```
+
+Baidu mode is a cloud API path. It sends Chinese transcript text to Baidu and requires network access plus API credentials.

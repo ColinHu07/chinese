@@ -6,3 +6,5 @@ scipy
 rich
 rapidfuzz
 pytest
+requests
+python-dotenv

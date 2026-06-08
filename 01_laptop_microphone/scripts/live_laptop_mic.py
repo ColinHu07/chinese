@@ -28,6 +28,7 @@ from config import (
 )
 from logging_utils import JsonlSessionLogger, optional_float
 from recorder import LiveAudioRecorder, rms_energy
+from text_translation import BaiduTranslator, TextTranslationError
 from translator import WhisperTranslator
 
 
@@ -42,6 +43,14 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--buffer-seconds", type=float, default=DEFAULT_BUFFER_SECONDS)
     parser.add_argument("--log-dir", default=DEFAULT_LOG_DIR)
     parser.add_argument("--list-devices", action="store_true")
+    parser.add_argument(
+        "--mode",
+        choices=("whisper", "baidu"),
+        default="whisper",
+        help="whisper uses Whisper task=translate; baidu transcribes Chinese then calls Baidu zh->en.",
+    )
+    parser.add_argument("--target-language", default="en", help="Text translation target language for Baidu mode")
+    parser.add_argument("--show-source", action="store_true", help="Show Chinese transcript under Baidu output")
     return parser.parse_args()
 
 
@@ -61,9 +70,16 @@ def main() -> None:
         buffer_seconds=args.buffer_seconds,
         rms_threshold=args.rms_threshold,
     )
+    whisper_task = "transcribe" if args.mode == "baidu" else "translate"
     translator = WhisperTranslator(
-        WhisperConfig(model=args.model, language=args.language, task="translate")
+        WhisperConfig(model=args.model, language=args.language, task=whisper_task)
     )
+    text_translator = None
+    if args.mode == "baidu":
+        try:
+            text_translator = BaiduTranslator.from_env()
+        except TextTranslationError as exc:
+            raise SystemExit(str(exc)) from exc
     recorder = LiveAudioRecorder(
         device_index=device_index,
         sample_rate=SAMPLE_RATE,
@@ -77,7 +93,8 @@ def main() -> None:
     translator.load()
     print(
         "Listening. Press Ctrl+C to stop. "
-        f"model={args.model} chunk={audio_config.chunk_seconds}s overlap={audio_config.overlap_seconds}s"
+        f"model={args.model} mode={args.mode} "
+        f"chunk={audio_config.chunk_seconds}s overlap={audio_config.overlap_seconds}s"
     )
 
     chunk_id = 0
@@ -94,13 +111,31 @@ def main() -> None:
             started = time.perf_counter()
             caption = ""
             inference_seconds = None
+            source_text = ""
+            translation_error = ""
 
             if energy >= audio_config.rms_threshold:
-                caption = translator.translate_audio(audio, sample_rate=SAMPLE_RATE)
+                source_text = translator.translate_audio(audio, sample_rate=SAMPLE_RATE)
+                if args.mode == "baidu" and text_translator is not None:
+                    try:
+                        caption = text_translator.translate(
+                            source_text,
+                            source_lang=args.language,
+                            target_lang=args.target_language,
+                        )
+                    except TextTranslationError as exc:
+                        translation_error = str(exc)
+                        print(f"[translation] {translation_error}", file=sys.stderr)
+                        caption = ""
+                else:
+                    caption = source_text
                 inference_seconds = time.perf_counter() - started
                 display = deduper.filter(caption)
                 if display:
-                    printer.print(display)
+                    if args.show_source and source_text and args.mode == "baidu":
+                        printer.print(f"{display}\n  zh: {source_text}")
+                    else:
+                        printer.print(display)
 
             logger.write(
                 {
@@ -109,12 +144,16 @@ def main() -> None:
                     "chunk_seconds": audio_config.chunk_seconds,
                     "overlap_seconds": audio_config.overlap_seconds,
                     "model": args.model,
+                    "mode": args.mode,
+                    "whisper_task": whisper_task,
                     "sample_rate": SAMPLE_RATE,
                     "rms": round(energy, 6),
                     "rms_threshold": audio_config.rms_threshold,
                     "skipped_silence": energy < audio_config.rms_threshold,
                     "inference_seconds": optional_float(inference_seconds),
+                    "source_text": source_text,
                     "caption": caption,
+                    "translation_error": translation_error,
                 }
             )
     except KeyboardInterrupt:
