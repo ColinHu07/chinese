@@ -1,5 +1,6 @@
 .DS_Store
 __pycache__/
+.pytest_cache/
 *.py[cod]
 .venv/
 venv/
@@ -9,3 +10,4 @@ logs/
 node_modules/
 DerivedData/
 *.xcuserdata/
+03_meta_wearables_mobile_bridge/mobile/ios/vendor/meta-wearables-dat-ios/samples/CameraAccess/CameraAccess.xcodeproj/project.xcworkspace/

@@ -7,6 +7,7 @@ No-API Mandarin-to-English live caption translator prototype.
 1. `01_laptop_microphone/` - Local laptop microphone and audio-file translation using local Whisper.
 2. `02_bluetooth_microphone/` - Bluetooth microphone and glasses-as-mic experiments using the same local translator core.
 3. `03_meta_wearables_mobile_bridge/` - WebSocket server plus iOS bridge source for mobile audio capture.
+4. `04_display_english_to_chinese/` - Display-only English-to-Chinese caption renderer prototype for browser and Ray-Ban Display testing.
 
 The first run may download Whisper model weights. After that, inference runs locally.
 
@@ -36,4 +37,15 @@ For the mobile bridge:
 cd ../03_meta_wearables_mobile_bridge/server
 pip install -r requirements.txt
 python scripts/local_ws_translator_server.py --host 0.0.0.0 --port 8765 --model base
+```
+
+For the English-to-Chinese display prototype:
+
+```bash
+cd ../04_display_english_to_chinese
+python -m venv .venv
+source .venv/bin/activate
+pip install --upgrade pip
+pip install -r requirements.txt
+uvicorn backend.server:app --host 0.0.0.0 --port 8000
 ```

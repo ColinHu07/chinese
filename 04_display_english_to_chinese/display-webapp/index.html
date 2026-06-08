@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="zh-Hans">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=600, height=600, initial-scale=1" />
+    <title>中文实时字幕</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <main id="display" aria-live="polite">
+      <header class="status-row">
+        <span id="mode">EN -> 中文</span>
+        <span id="status">未连接</span>
+      </header>
+      <section class="caption-wrap">
+        <p id="caption">火车站在哪里？</p>
+      </section>
+      <footer class="source-row">
+        <span id="source">Where is the train station?</span>
+        <span id="clock">--:--:--</span>
+      </footer>
+    </main>
+    <script src="config.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>
