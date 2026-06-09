@@ -16,6 +16,7 @@ from .websocket_manager import WebSocketManager
 class CaptionRequest(BaseModel):
     source_text: str = Field(default="", description="Original English text")
     target_text: str = Field(..., min_length=1, description="Simplified Chinese caption")
+    mode: str = Field(default="en_to_zh", pattern="^(en_to_zh|zh_to_en)$")
     is_final: bool = True
     latency_ms: int = Field(default=0, ge=0)
 
@@ -58,11 +59,11 @@ async def health() -> HealthResponse:
     )
 
 
-@app.post("/test-caption", response_model=TestCaptionResponse)
-async def test_caption(request: CaptionRequest) -> TestCaptionResponse:
+async def broadcast_caption(request: CaptionRequest) -> TestCaptionResponse:
     payload = build_caption_payload(
         source_text=request.source_text,
         target_text=request.target_text,
+        mode=request.mode,
         is_final=request.is_final,
         latency_ms=request.latency_ms,
     )
@@ -73,6 +74,16 @@ async def test_caption(request: CaptionRequest) -> TestCaptionResponse:
         connected_clients=connected_clients,
         payload=payload,
     )
+
+
+@app.post("/caption", response_model=TestCaptionResponse)
+async def caption(request: CaptionRequest) -> TestCaptionResponse:
+    return await broadcast_caption(request)
+
+
+@app.post("/test-caption", response_model=TestCaptionResponse)
+async def test_caption(request: CaptionRequest) -> TestCaptionResponse:
+    return await broadcast_caption(request)
 
 
 @app.websocket(settings.caption_ws_path)

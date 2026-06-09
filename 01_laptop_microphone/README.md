@@ -65,6 +65,19 @@ python scripts/live_laptop_mic.py \
   --show-source
 ```
 
+To send live captions to the browser/glasses display prototype, start the Stage 4 backend and static web app first, then add `--display-url`:
+
+```bash
+python scripts/live_laptop_mic.py \
+  --mode baidu \
+  --model base \
+  --device-index auto \
+  --chunk-seconds 3 \
+  --overlap-seconds 0.5 \
+  --show-source \
+  --display-url http://127.0.0.1:8000/caption
+```
+
 For a file:
 
 ```bash

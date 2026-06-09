@@ -36,4 +36,17 @@ python scripts/live_bluetooth_mic.py \
   --show-source
 ```
 
+To mirror captions to the browser/glasses display prototype:
+
+```bash
+python scripts/live_bluetooth_mic.py \
+  --mode baidu \
+  --device-index <INDEX> \
+  --model base \
+  --chunk-seconds 3 \
+  --overlap-seconds 0.5 \
+  --show-source \
+  --display-url http://127.0.0.1:8000/caption
+```
+
 Baidu mode sends Chinese transcript text to Baidu, so it is not offline.

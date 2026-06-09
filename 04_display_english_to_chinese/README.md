@@ -28,6 +28,14 @@ curl -X POST http://localhost:8000/test-caption \
   -d '{"source_text":"Where is the train station?","target_text":"火车站在哪里？"}'
 ```
 
+Send a Chinese-to-English live-style caption:
+
+```bash
+curl -X POST http://localhost:8000/caption \
+  -H "Content-Type: application/json" \
+  -d '{"mode":"zh_to_en","source_text":"你好","target_text":"Hello"}'
+```
+
 ## Open Display App
 
 Open `display-webapp/index.html` in a desktop browser. It works with static samples if the backend is not running.
@@ -39,6 +47,16 @@ If the backend is running, the app connects to `window.CAPTION_WS_URL` from `dis
 For glasses testing, host the web app at a public HTTPS URL and use a public `wss://` caption endpoint. A deployed HTTPS web app should not depend on `ws://localhost`.
 
 Web App microphone capture is intentionally out of scope. The Web App is only a caption renderer.
+
+## Live Translator Bridge
+
+Stage 1 and Stage 2 can post live captions here with:
+
+```bash
+--display-url http://127.0.0.1:8000/caption
+```
+
+The display app listens over WebSocket and updates automatically.
 
 ## Optional Argos Backend
 

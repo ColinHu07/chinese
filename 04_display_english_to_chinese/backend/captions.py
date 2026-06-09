@@ -14,13 +14,14 @@ def build_caption_payload(
     source_text: str,
     target_text: str,
     *,
+    mode: str = "en_to_zh",
     is_final: bool = True,
     latency_ms: int = 0,
     created_at: str | None = None,
 ) -> dict[str, Any]:
     return {
         "type": "caption",
-        "mode": "en_to_zh",
+        "mode": mode,
         "source_text": source_text,
         "target_text": target_text,
         "is_final": is_final,

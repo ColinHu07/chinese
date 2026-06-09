@@ -28,6 +28,7 @@ from config import (
     AudioConfig,
     WhisperConfig,
 )
+from display_bridge import DisplayBridgeError, DisplayCaption, DisplayCaptionClient
 from logging_utils import JsonlSessionLogger, optional_float
 from recorder import LiveAudioRecorder, rms_energy
 from text_translation import BaiduTranslator, TextTranslationError
@@ -53,6 +54,17 @@ def parse_args() -> argparse.Namespace:
     )
     parser.add_argument("--target-language", default="en", help="Text translation target language for Baidu mode")
     parser.add_argument("--show-source", action="store_true", help="Show Chinese transcript under Baidu output")
+    parser.add_argument(
+        "--display-url",
+        default="",
+        help="Optional display backend POST URL, e.g. http://127.0.0.1:8000/caption",
+    )
+    parser.add_argument(
+        "--display-mode",
+        choices=("zh_to_en", "en_to_zh"),
+        default="zh_to_en",
+        help="Caption direction sent to the display backend.",
+    )
     return parser.parse_args()
 
 
@@ -89,6 +101,7 @@ def main() -> None:
     deduper = CaptionDeduper()
     printer = CaptionPrinter()
     logger = JsonlSessionLogger(args.log_dir, prefix="bluetooth_session")
+    display_client = DisplayCaptionClient(args.display_url) if args.display_url else None
 
     print("Loading Whisper model...")
     translator.load()
@@ -113,6 +126,7 @@ def main() -> None:
             inference_seconds = None
             source_text = ""
             translation_error = ""
+            display_error = ""
 
             if energy >= audio_config.rms_threshold:
                 source_text = translator.translate_audio(audio, sample_rate=SAMPLE_RATE)
@@ -136,6 +150,19 @@ def main() -> None:
                         printer.print(f"{display}\n  zh: {source_text}")
                     else:
                         printer.print(display)
+                    if display_client is not None:
+                        try:
+                            display_client.post(
+                                DisplayCaption(
+                                    mode=args.display_mode,
+                                    source_text=source_text if args.mode == "baidu" else "",
+                                    target_text=caption,
+                                    latency_ms=int((inference_seconds or 0) * 1000),
+                                )
+                            )
+                        except DisplayBridgeError as exc:
+                            display_error = str(exc)
+                            print(f"[display] {display_error}", file=sys.stderr)
 
             logger.write(
                 {
@@ -156,6 +183,8 @@ def main() -> None:
                     "source_text": source_text,
                     "caption": caption,
                     "translation_error": translation_error,
+                    "display_url": args.display_url,
+                    "display_error": display_error,
                 }
             )
     except KeyboardInterrupt:

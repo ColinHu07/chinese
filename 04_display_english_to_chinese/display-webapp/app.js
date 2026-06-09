@@ -33,6 +33,7 @@ const captionEl = document.getElementById("caption");
 const sourceEl = document.getElementById("source");
 const statusEl = document.getElementById("status");
 const clockEl = document.getElementById("clock");
+const modeEl = document.getElementById("mode");
 
 let sampleIndex = 2;
 let fontSize = 46;
@@ -43,6 +44,16 @@ let socket = null;
 function setStatus(text, state) {
   statusEl.textContent = text;
   statusEl.dataset.state = state || "";
+}
+
+function setMode(mode) {
+  if (mode === "zh_to_en") {
+    modeEl.textContent = "中文 -> EN";
+    document.documentElement.lang = "en";
+    return;
+  }
+  modeEl.textContent = "EN -> 中文";
+  document.documentElement.lang = "zh-Hans";
 }
 
 function setCaption(target, source) {
@@ -75,6 +86,7 @@ function clearCaption() {
 
 function handleCaptionMessage(payload) {
   if (payload.type === "caption") {
+    setMode(payload.mode);
     setCaption(payload.target_text, payload.source_text);
   }
   if (payload.type === "status") {
