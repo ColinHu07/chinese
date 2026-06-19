@@ -34,9 +34,6 @@ struct TranslatorView: View {
     .background(Color(.systemGroupedBackground))
     .navigationTitle("Translator")
     .navigationBarTitleDisplayMode(.inline)
-    .onAppear {
-      viewModel.showReady(displayViewModel: displayViewModel)
-    }
     .onDisappear {
       micViewModel.stopMic()
       micViewModel.disconnect()
