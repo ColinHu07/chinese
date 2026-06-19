@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 70;
+	objectVersion = 54;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -17,6 +17,9 @@
 		DB01000000000008 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = DB02000000000009 /* Assets.xcassets */; };
 		DB01000000000009 /* MWDATCore in Frameworks */ = {isa = PBXBuildFile; productRef = DB0A000000000001 /* MWDATCore */; };
 		DB0100000000000A /* MWDATDisplay in Frameworks */ = {isa = PBXBuildFile; productRef = DB0A000000000002 /* MWDATDisplay */; };
+		DB0100000000000B /* TranslatorCaptionDisplay.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB0200000000000C /* TranslatorCaptionDisplay.swift */; };
+		DB0100000000000C /* TranslatorCaptionViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB0200000000000D /* TranslatorCaptionViewModel.swift */; };
+		DB0100000000000D /* TranslatorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB0200000000000E /* TranslatorView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -44,6 +47,9 @@
 		DB02000000000009 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		DB0200000000000A /* DisplayAccess.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = DisplayAccess.entitlements; sourceTree = "<group>"; };
 		DB0200000000000B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		DB0200000000000C /* TranslatorCaptionDisplay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TranslatorCaptionDisplay.swift; sourceTree = "<group>"; };
+		DB0200000000000D /* TranslatorCaptionViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TranslatorCaptionViewModel.swift; sourceTree = "<group>"; };
+		DB0200000000000E /* TranslatorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TranslatorView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -93,6 +99,7 @@
 			isa = PBXGroup;
 			children = (
 				DB02000000000003 /* CarMaintenanceDisplay.swift */,
+				DB0200000000000C /* TranslatorCaptionDisplay.swift */,
 			);
 			path = Samples;
 			sourceTree = "<group>";
@@ -101,6 +108,7 @@
 			isa = PBXGroup;
 			children = (
 				DB02000000000004 /* DisplayViewModel.swift */,
+				DB0200000000000D /* TranslatorCaptionViewModel.swift */,
 				DB02000000000005 /* WearablesViewModel.swift */,
 			);
 			path = ViewModels;
@@ -112,6 +120,7 @@
 				DB02000000000006 /* RegistrationView.swift */,
 				DB02000000000007 /* SampleAppsView.swift */,
 				DB02000000000008 /* SettingsView.swift */,
+				DB0200000000000E /* TranslatorView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -199,6 +208,9 @@
 				DB01000000000005 /* RegistrationView.swift in Sources */,
 				DB01000000000006 /* SampleAppsView.swift in Sources */,
 				DB01000000000007 /* SettingsView.swift in Sources */,
+				DB0100000000000B /* TranslatorCaptionDisplay.swift in Sources */,
+				DB0100000000000C /* TranslatorCaptionViewModel.swift in Sources */,
+				DB0100000000000D /* TranslatorView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -212,12 +224,11 @@
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = DisplayAccess/DisplayAccess.entitlements;
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				CODE_SIGN_STYLE = Manual;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "";
-				DEVELOPMENT_TEAM = "";
-				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = V9WTTPBFK9;
+				DEVELOPMENT_TEAM = JP3AJ7GQLN;
 				ENABLE_PREVIEWS = YES;
 				FRAMEWORK_SEARCH_PATHS = "";
 				INFOPLIST_FILE = DisplayAccess/Info.plist;
@@ -227,10 +238,9 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.meta.wearables.external.DisplaySample;
+				PRODUCT_BUNDLE_IDENTIFIER = com.colinhu.ChineseTranslator;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
-				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = "Facebook Generic";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -243,12 +253,11 @@
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = DisplayAccess/DisplayAccess.entitlements;
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				CODE_SIGN_STYLE = Manual;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "";
-				DEVELOPMENT_TEAM = "";
-				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = V9WTTPBFK9;
+				DEVELOPMENT_TEAM = JP3AJ7GQLN;
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = DisplayAccess/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
@@ -257,10 +266,9 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.meta.wearables.external.DisplaySample;
+				PRODUCT_BUNDLE_IDENTIFIER = com.colinhu.ChineseTranslator;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
-				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = "Facebook Generic";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};

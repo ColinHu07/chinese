@@ -17,7 +17,7 @@ import MWDATCore
 import SwiftUI
 
 private enum AppTab: Hashable {
-  case samples
+  case translator
   case settings
 }
 
@@ -25,7 +25,7 @@ private enum AppTab: Hashable {
 struct DisplayAccessApp: App {
   @State private var wearablesViewModel: WearablesViewModel
   @State private var displayViewModel: DisplayViewModel
-  @State private var selectedTab: AppTab = .samples
+  @State private var selectedTab: AppTab = .translator
 
   init() {
     do {
@@ -45,12 +45,12 @@ struct DisplayAccessApp: App {
     WindowGroup {
       TabView(selection: $selectedTab) {
         NavigationStack {
-          SampleAppsView(displayViewModel: displayViewModel)
+          TranslatorView(displayViewModel: displayViewModel)
         }
         .tabItem {
-          Label("Samples", systemImage: "eyeglasses")
+          Label("Translator", systemImage: "captions.bubble")
         }
-        .tag(AppTab.samples)
+        .tag(AppTab.translator)
 
         NavigationStack {
           SettingsView(

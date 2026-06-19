@@ -209,6 +209,35 @@ class DisplayViewModel {
     }
   }
 
+  // MARK: - Translator Display
+
+  func sendTranslatorReady(
+    serverURL: String,
+    onDemo: @escaping @Sendable () -> Void
+  ) async {
+    await send(TranslatorCaptionDisplay.ready(serverURL: serverURL, onDemo: onDemo))
+  }
+
+  func sendTranslatorWaiting(
+    serverURL: String,
+    onDemo: @escaping @Sendable () -> Void
+  ) async {
+    await send(TranslatorCaptionDisplay.waiting(serverURL: serverURL, onDemo: onDemo))
+  }
+
+  func sendTranslatorCaption(
+    _ caption: TranslatorCaption,
+    onClear: @escaping @Sendable () -> Void
+  ) async {
+    await send(TranslatorCaptionDisplay.caption(caption, onClear: onClear))
+  }
+
+  func clearTranslatorCaption(
+    onDemo: @escaping @Sendable () -> Void
+  ) async {
+    await send(TranslatorCaptionDisplay.cleared(onDemo: onDemo))
+  }
+
   // MARK: - Car Maintenance
 
   func sendCarMaintenanceTutorialList() async {
