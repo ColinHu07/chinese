@@ -87,15 +87,15 @@ final class TranslatorCaptionViewModel {
     socket.resume()
     if let displayViewModel {
       Task {
-      await displayViewModel.sendTranslatorWaiting(
-        serverURL: serverURLString,
-        onDemo: { [weak self, weak displayViewModel] in
-          Task { @MainActor in
-            guard let self, let displayViewModel else { return }
-            await self.sendDemo(displayViewModel: displayViewModel)
+        await displayViewModel.sendTranslatorWaiting(
+          serverURL: serverURLString,
+          onDemo: { [weak self, weak displayViewModel] in
+            Task { @MainActor in
+              guard let self, let displayViewModel else { return }
+              await self.sendDemo(displayViewModel: displayViewModel)
+            }
           }
-        }
-      )
+        )
       }
     }
     receiveLoop(displayViewModel: displayViewModel)

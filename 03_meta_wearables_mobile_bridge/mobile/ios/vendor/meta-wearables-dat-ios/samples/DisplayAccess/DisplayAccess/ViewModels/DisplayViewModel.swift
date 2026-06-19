@@ -39,6 +39,8 @@ class DisplayViewModel {
   @ObservationIgnored private var displayStateTask: Task<Void, Never>?
   @ObservationIgnored private var displayStateContinuation: AsyncStream<DisplayState>.Continuation?
   @ObservationIgnored private var pendingAction: (() async -> Void)?
+  @ObservationIgnored private var isDisplaySendInFlight = false
+  @ObservationIgnored private var queuedSendAction: (() async -> Void)?
 
   init(wearables: WearablesInterface) {
     self.wearables = wearables
@@ -78,21 +80,42 @@ class DisplayViewModel {
   /// Sends a display view to the glasses. Auto-attaches if not connected;
   /// the view is queued and sent once the display session is ready.
   func send(_ view: some DisplayableView) async {
-    if let display, isConnected {
-      await doSend(view, on: display)
+    let sendableView = view
+    let sendAction = { [weak self] in
+      guard let self, let cap = self.display else { return }
+      await self.doSend(sendableView, on: cap)
+    }
+
+    if display != nil, isConnected {
+      await enqueueDisplaySend(sendAction)
       return
     }
 
-    // Store as pending action — will fire once display is ready
-    let sendableView = view
     pendingAction = { [weak self] in
-      guard let self, let cap = self.display else { return }
-      await self.doSend(sendableView, on: cap)
+      await self?.enqueueDisplaySend(sendAction)
     }
 
     if display == nil {
       await attachToDisplay()
     }
+  }
+
+  private func enqueueDisplaySend(_ action: @escaping () async -> Void) async {
+    if isDisplaySendInFlight {
+      queuedSendAction = action
+      return
+    }
+
+    isDisplaySendInFlight = true
+    await action()
+
+    while let nextAction = queuedSendAction {
+      queuedSendAction = nil
+      try? await Task.sleep(nanoseconds: 250_000_000)
+      await nextAction()
+    }
+
+    isDisplaySendInFlight = false
   }
 
   private func doSend(_ view: some DisplayableView, on capability: Display) async {
@@ -101,8 +124,10 @@ class DisplayViewModel {
 
     do {
       try await capability.send(view)
+      errorMessage = nil
     } catch {
       let message = (error as? DisplayError)?.description ?? error.localizedDescription
+      guard !isSupersededDisplayRequest(message) else { return }
       errorMessage = message
     }
   }
@@ -340,8 +365,15 @@ class DisplayViewModel {
   }
 
   private func handleSessionError(_ error: DeviceSessionError) {
+    let message = error.localizedDescription
+    guard !isSupersededDisplayRequest(message) else { return }
+
     requiresDATAppUpdate = error == .datAppOnTheGlassesUpdateRequired
     didFailToStartSession = true
-    errorMessage = error.localizedDescription
+    errorMessage = message
+  }
+
+  private func isSupersededDisplayRequest(_ message: String) -> Bool {
+    message.localizedCaseInsensitiveContains("suspended by new display request")
   }
 }
