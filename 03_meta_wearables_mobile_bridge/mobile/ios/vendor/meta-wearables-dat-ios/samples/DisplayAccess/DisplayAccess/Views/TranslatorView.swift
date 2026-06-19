@@ -105,7 +105,7 @@ struct TranslatorView: View {
       VStack(alignment: .leading, spacing: 14) {
         sectionHeader("Live captions", systemImage: "waveform")
 
-        TextField("ws://192.168.1.124:8000/ws/captions", text: $viewModel.serverURLString)
+        TextField("ws://192.168.1.201:8000/ws/captions", text: $viewModel.serverURLString)
           .font(.system(.footnote, design: .monospaced))
           .textInputAutocapitalization(.never)
           .autocorrectionDisabled()

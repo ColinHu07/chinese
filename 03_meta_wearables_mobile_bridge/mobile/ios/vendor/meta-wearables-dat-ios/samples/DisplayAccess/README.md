@@ -1,12 +1,14 @@
-# Display Access App
+# Display Translator App
 
-A sample iOS application demonstrating integration with Meta Wearables Device Access Toolkit. This app showcases sending visual content to Meta Ray-Ban Display glasses using the DAT SDK Display module, with step-by-step tutorials rendered on the wearable display.
+An iOS prototype for sending live translation captions to Meta Ray-Ban Display glasses using the Meta Wearables Device Access Toolkit display module.
 
 ## Features
 
 - Connect to Meta Ray-Ban Display glasses
-- Send interactive display views to the glasses
-- Navigate step-by-step tutorials on the wearable display
+- Send a simple translator status screen to the glasses
+- Receive caption payloads from the local FastAPI backend over WebSocket
+- Push incoming Chinese-to-English captions to the glasses display
+- Send a demo caption to verify the glasses display path
 - Manage device registration and connection states
 - Open firmware and glasses app update flows when required
 
@@ -33,8 +35,17 @@ A sample iOS application demonstrating integration with Meta Wearables Device Ac
 1. Turn 'Developer Mode' on in the Meta AI app.
 1. Launch the app.
 1. Press the "Register" button to complete app registration.
-1. Once connected, tap "Try it" on the "Car maintenance guide" sample to send display content to the glasses.
-1. The content should be displayed on the glasses.
+1. Start the caption backend on the Mac:
+   ```bash
+   cd /Users/owenhu/Documents/chinese/04_display_english_to_chinese
+   source .venv/bin/activate
+   uvicorn backend.server:app --host 0.0.0.0 --port 8000
+   ```
+1. In the iPhone app, set the live captions URL to your Mac's Wi-Fi IP, for example `ws://192.168.1.201:8000/ws/captions`.
+1. Tap "Show" to send the translator screen to the glasses.
+1. Tap "Demo" to verify a sample translation renders on the glasses.
+1. Tap "Connect" to receive live captions from the backend.
+1. Run the laptop mic translator with `--display-url http://127.0.0.1:8000/caption`.
 1. If a firmware update is required, tap "Update firmware" in Settings.
 1. If session start reports that the app on the glasses is outdated, the app opens Settings so you can tap "Update app on glasses".
 

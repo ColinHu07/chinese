@@ -37,7 +37,7 @@ final class TranslatorCaptionViewModel {
   @ObservationIgnored private let decoder = JSONDecoder()
 
   private static let serverURLDefaultsKey = "translator.caption.websocket.url"
-  private static let defaultServerURL = "ws://192.168.1.124:8000/ws/captions"
+  private static let defaultServerURL = "ws://192.168.1.201:8000/ws/captions"
 
   init() {
     self.serverURLString =
