@@ -62,6 +62,17 @@ final class MicTestViewModel {
       return
     }
 
+    statusText = "Checking local network"
+    lastErrorMessage = nil
+    LocalNetworkPermissionProbe.shared.requestIfNeeded { [weak self, weak displayViewModel] in
+      Task { @MainActor in
+        guard let self else { return }
+        self.openSocket(url, displayViewModel: displayViewModel)
+      }
+    }
+  }
+
+  private func openSocket(_ url: URL, displayViewModel: DisplayViewModel?) {
     let socket = URLSession.shared.webSocketTask(with: url)
     self.socket = socket
     isSocketConnected = true

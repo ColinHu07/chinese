@@ -67,6 +67,17 @@ final class TranslatorCaptionViewModel {
       return
     }
 
+    statusText = "Checking local network"
+    lastErrorMessage = nil
+    LocalNetworkPermissionProbe.shared.requestIfNeeded { [weak self, weak displayViewModel] in
+      Task { @MainActor in
+        guard let self else { return }
+        self.openSocket(url, displayViewModel: displayViewModel)
+      }
+    }
+  }
+
+  private func openSocket(_ url: URL, displayViewModel: DisplayViewModel?) {
     let socket = URLSession.shared.webSocketTask(with: url)
     self.socket = socket
     isSocketConnected = true
@@ -74,7 +85,8 @@ final class TranslatorCaptionViewModel {
     lastErrorMessage = nil
 
     socket.resume()
-    Task {
+    if let displayViewModel {
+      Task {
       await displayViewModel.sendTranslatorWaiting(
         serverURL: serverURLString,
         onDemo: { [weak self, weak displayViewModel] in
@@ -84,6 +96,7 @@ final class TranslatorCaptionViewModel {
           }
         }
       )
+      }
     }
     receiveLoop(displayViewModel: displayViewModel)
   }
