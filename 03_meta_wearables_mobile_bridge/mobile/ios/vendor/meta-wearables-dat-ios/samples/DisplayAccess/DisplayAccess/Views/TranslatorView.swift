@@ -18,6 +18,7 @@ struct TranslatorView: View {
   var displayViewModel: DisplayViewModel
 
   @State private var viewModel = TranslatorCaptionViewModel()
+  @State private var micViewModel = MicTestViewModel()
 
   var body: some View {
     ScrollView {
@@ -25,6 +26,7 @@ struct TranslatorView: View {
         header
         glassesCard
         liveCaptionCard
+        micTestCard
         previewCard
       }
       .padding(20)
@@ -34,6 +36,10 @@ struct TranslatorView: View {
     .navigationBarTitleDisplayMode(.inline)
     .onAppear {
       viewModel.showReady(displayViewModel: displayViewModel)
+    }
+    .onDisappear {
+      micViewModel.stopMic()
+      micViewModel.disconnect()
     }
   }
 
@@ -65,6 +71,10 @@ struct TranslatorView: View {
         statusPill(
           title: viewModel.isSocketConnected ? "Live backend" : "Backend off",
           color: viewModel.isSocketConnected ? .blue : .gray
+        )
+        statusPill(
+          title: micViewModel.isStreaming ? "Mic streaming" : "Mic idle",
+          color: micViewModel.isStreaming ? .green : .gray
         )
       }
     }
@@ -155,12 +165,89 @@ struct TranslatorView: View {
     }
   }
 
+  private var micTestCard: some View {
+    card {
+      VStack(alignment: .leading, spacing: 14) {
+        sectionHeader("Mic caption test", systemImage: "mic")
+
+        TextField("ws://192.168.1.201:8765", text: $micViewModel.serverURLString)
+          .font(.system(.footnote, design: .monospaced))
+          .textInputAutocapitalization(.never)
+          .autocorrectionDisabled()
+          .keyboardType(.URL)
+          .padding(12)
+          .background(Color(.secondarySystemGroupedBackground), in: RoundedRectangle(cornerRadius: 10))
+
+        HStack(spacing: 10) {
+          primaryButton(
+            title: micViewModel.isSocketConnected ? "Disconnect" : "Connect",
+            systemImage: micViewModel.isSocketConnected ? "stop.fill" : "bolt.fill"
+          ) {
+            if micViewModel.isSocketConnected {
+              micViewModel.disconnect()
+            } else {
+              micViewModel.connect(displayViewModel: displayViewModel)
+            }
+          }
+
+          secondaryButton(
+            title: micViewModel.isStreaming ? "Stop Mic" : "Start Mic",
+            systemImage: micViewModel.isStreaming ? "mic.slash.fill" : "mic.fill"
+          ) {
+            if micViewModel.isStreaming {
+              micViewModel.stopMic()
+            } else {
+              micViewModel.startMic()
+            }
+          }
+        }
+
+        Toggle("Send mic captions to glasses", isOn: $micViewModel.autoSendToGlasses)
+          .font(.subheadline)
+
+        VStack(alignment: .leading, spacing: 8) {
+          HStack {
+            Label(micViewModel.statusText, systemImage: "circle.fill")
+              .font(.footnote)
+              .foregroundStyle(micViewModel.isStreaming ? .green : .secondary)
+            Spacer()
+            Text("\(micViewModel.captionCount)")
+              .font(.footnote.monospacedDigit())
+              .foregroundStyle(.secondary)
+          }
+
+          Text(micViewModel.routeText)
+            .font(.caption)
+            .foregroundStyle(.secondary)
+            .lineLimit(3)
+
+          GeometryReader { geometry in
+            ZStack(alignment: .leading) {
+              Capsule()
+                .fill(Color(.secondarySystemGroupedBackground))
+              Capsule()
+                .fill(Color(red: 0.10, green: 0.55, blue: 0.40))
+                .frame(width: max(8, geometry.size.width * micViewModel.audioLevel))
+            }
+          }
+          .frame(height: 10)
+        }
+
+        if let error = micViewModel.lastErrorMessage {
+          Label(error, systemImage: "exclamationmark.triangle.fill")
+            .font(.footnote)
+            .foregroundStyle(.orange)
+        }
+      }
+    }
+  }
+
   private var previewCard: some View {
     card {
       VStack(alignment: .leading, spacing: 14) {
         sectionHeader("Current caption", systemImage: "text.bubble")
 
-        if let caption = viewModel.lastCaption {
+        if let caption = micViewModel.lastCaption ?? viewModel.lastCaption {
           VStack(alignment: .leading, spacing: 10) {
             Text(caption.mode.displayLabel)
               .font(.caption.weight(.semibold))
@@ -182,6 +269,7 @@ struct TranslatorView: View {
 
           secondaryButton(title: "Clear", systemImage: "xmark") {
             viewModel.clear(displayViewModel: displayViewModel)
+            micViewModel.clear(displayViewModel: displayViewModel)
           }
         } else {
           Text("No caption yet")

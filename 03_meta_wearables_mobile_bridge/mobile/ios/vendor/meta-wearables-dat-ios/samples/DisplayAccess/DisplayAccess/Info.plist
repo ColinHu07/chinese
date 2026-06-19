@@ -48,6 +48,8 @@
 	</dict>
 	<key>NSBluetoothAlwaysUsageDescription</key>
 	<string>DisplayAccess needs Bluetooth to connect to your glasses.</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>DisplayAccess needs microphone access to test live translation captions from the active audio route.</string>
 	<key>NSAppTransportSecurity</key>
 	<dict>
 		<key>NSAllowsArbitraryLoads</key>

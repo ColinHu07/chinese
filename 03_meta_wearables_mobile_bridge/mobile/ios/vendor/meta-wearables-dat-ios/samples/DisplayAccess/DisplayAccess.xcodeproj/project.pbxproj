@@ -20,6 +20,7 @@
 		DB0100000000000B /* TranslatorCaptionDisplay.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB0200000000000C /* TranslatorCaptionDisplay.swift */; };
 		DB0100000000000C /* TranslatorCaptionViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB0200000000000D /* TranslatorCaptionViewModel.swift */; };
 		DB0100000000000D /* TranslatorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB0200000000000E /* TranslatorView.swift */; };
+		DB0100000000000E /* MicTestViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB0200000000000F /* MicTestViewModel.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -50,6 +51,7 @@
 		DB0200000000000C /* TranslatorCaptionDisplay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TranslatorCaptionDisplay.swift; sourceTree = "<group>"; };
 		DB0200000000000D /* TranslatorCaptionViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TranslatorCaptionViewModel.swift; sourceTree = "<group>"; };
 		DB0200000000000E /* TranslatorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TranslatorView.swift; sourceTree = "<group>"; };
+		DB0200000000000F /* MicTestViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MicTestViewModel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -108,6 +110,7 @@
 			isa = PBXGroup;
 			children = (
 				DB02000000000004 /* DisplayViewModel.swift */,
+				DB0200000000000F /* MicTestViewModel.swift */,
 				DB0200000000000D /* TranslatorCaptionViewModel.swift */,
 				DB02000000000005 /* WearablesViewModel.swift */,
 			);
@@ -211,6 +214,7 @@
 				DB0100000000000B /* TranslatorCaptionDisplay.swift in Sources */,
 				DB0100000000000C /* TranslatorCaptionViewModel.swift in Sources */,
 				DB0100000000000D /* TranslatorView.swift in Sources */,
+				DB0100000000000E /* MicTestViewModel.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
